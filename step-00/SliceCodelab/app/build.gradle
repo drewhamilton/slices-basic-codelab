@@ -21,4 +21,7 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+
+    implementation 'androidx.slice:slice-core:1.0.0'
+    implementation 'androidx.slice:slice-builders:1.0.0'
 }
