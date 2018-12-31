@@ -1,6 +1,7 @@
 package com.android.example.slicecodelab;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -32,35 +33,45 @@ public class MySliceProvider extends SliceProvider {
     }
 
     private Slice createTemperatureSlice(Uri sliceUri) {
-        final SliceAction tempUp = SliceAction.create(getChangeTempIntent(MainActivity.sTemperature + 1),
-                IconCompat.createWithResource(getContext(), R.drawable.ic_temp_up),
-                ListBuilder.ICON_IMAGE, "Increase temperature");
+        final Context context = getContext();
+        assert context != null;
 
-        final SliceAction tempDown = SliceAction.create(getChangeTempIntent(MainActivity.sTemperature - 1),
-                IconCompat.createWithResource(getContext(), R.drawable.ic_temp_down),
-                ListBuilder.ICON_IMAGE, "Decrease temperature");
+        final SliceAction tempUp = SliceAction.create(
+                getChangeTempIntent(MainActivity.sTemperature + 1),
+                IconCompat.createWithResource(context, R.drawable.ic_temp_up),
+                ListBuilder.ICON_IMAGE,
+                "Increase temperature");
 
-        final Intent intent = new Intent(getContext(), MainActivity.class);
-        final PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, 0);
-        final SliceAction openTempActivity = SliceAction.createDeeplink(pendingIntent,
-                IconCompat.createWithResource(getContext(), R.drawable.ic_launcher_foreground),
-                ListBuilder.UNKNOWN_IMAGE, "Temperature controls");
+        final SliceAction tempDown = SliceAction.create(
+                getChangeTempIntent(MainActivity.sTemperature - 1),
+                IconCompat.createWithResource(context, R.drawable.ic_temp_down),
+                ListBuilder.ICON_IMAGE,
+                "Decrease temperature");
 
-        final ListBuilder.RowBuilder temperatureRow = new ListBuilder.RowBuilder()
-                .setTitle(MainActivity.getTemperatureString(getContext()))
-                .addEndItem(tempUp)
-                .addEndItem(tempDown)
-                .setPrimaryAction(openTempActivity);
-        return new ListBuilder(getContext(), sliceUri, ListBuilder.INFINITY)
-                .addRow(temperatureRow)
+        final Intent intent = new Intent(context, MainActivity.class);
+        final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        final SliceAction openTempActivity = SliceAction.createDeeplink(
+                pendingIntent,
+                IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground),
+                ListBuilder.UNKNOWN_IMAGE,
+                "Temperature controls");
+
+        return new ListBuilder(context, sliceUri, ListBuilder.INFINITY)
+                .addRow(new ListBuilder.RowBuilder()
+                        .setTitle(MainActivity.getTemperatureString(context))
+                        .addEndItem(tempUp)
+                        .addEndItem(tempDown)
+                        .setPrimaryAction(openTempActivity))
                 .build();
     }
 
     private PendingIntent getChangeTempIntent(int value) {
+        final Context context = getContext();
+        assert context != null;
+
         final Intent intent = new Intent(MyBroadcastReceiver.ACTION_CHANGE_TEMP);
-        intent.setClass(getContext(), MyBroadcastReceiver.class);
+        intent.setClass(context, MyBroadcastReceiver.class);
         intent.putExtra(MyBroadcastReceiver.EXTRA_TEMP_VALUE, value);
-        return PendingIntent.getBroadcast(getContext(), sReqCode++, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getBroadcast(context, sReqCode++, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 }
