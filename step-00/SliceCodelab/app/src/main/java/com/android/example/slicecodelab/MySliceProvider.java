@@ -7,6 +7,7 @@ import java.util.Objects;
 import androidx.annotation.Nullable;
 import androidx.slice.Slice;
 import androidx.slice.SliceProvider;
+import androidx.slice.builders.ListBuilder;
 
 public class MySliceProvider extends SliceProvider {
 
@@ -25,9 +26,16 @@ public class MySliceProvider extends SliceProvider {
         }
     }
 
-    @Nullable
     private Slice createTemperatureSlice(Uri sliceUri) {
-        // TODO
-        return null;
+        ListBuilder listBuilder = new ListBuilder(getContext(), sliceUri, ListBuilder.INFINITY);
+
+        ListBuilder.RowBuilder temperatureRow = new ListBuilder.RowBuilder(listBuilder)
+                .setTitle(MainActivity.getTemperatureString(getContext()));
+
+        // TODO: add actions to row; in later step
+
+        listBuilder.addRow(temperatureRow);
+
+        return listBuilder.build();
     }
 }
