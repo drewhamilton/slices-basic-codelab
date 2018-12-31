@@ -38,10 +38,12 @@
         </activity>
 
         <provider
-            android:authorities="com.android.example.slicecodelab"
             android:name=".MySliceProvider"
+            android:authorities="com.android.example.slicecodelab"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
+
+        <receiver android:name=".MyBroadcastReceiver"/>
 
     </application>
 
