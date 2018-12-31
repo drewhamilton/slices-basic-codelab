@@ -17,12 +17,13 @@
 package com.android.example.slicecodelab;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.math.MathUtils;
-
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.math.MathUtils;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         newValue = MathUtils.clamp(newValue, 10, 30); // Lets keep temperatures reasonable
         if (newValue != sTemperature) {
             sTemperature = newValue;
+
+            final Uri uri = Uri.parse("content://com.android.example.slicecodelab/temperature");
+            context.getContentResolver().notifyChange(uri, null);
         }
     }
 }
